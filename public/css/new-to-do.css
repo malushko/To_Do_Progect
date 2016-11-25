@@ -1,0 +1,18 @@
+.tools{
+    float: right;
+    color: red;
+}
+.todo-list{
+   list-style-type: none;
+}
+.glyphicon:hover{
+    color: #3c763d;
+}
+
+.glyphicon {
+    top: 2px;
+}
+
+.saveButton{
+   display: none;
+}
