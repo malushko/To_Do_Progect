@@ -13,6 +13,10 @@
 
 Route::get('/', 'ToDoController@index');
 
-Route::post('post', ['middleware' => 'current_category', 'uses' => 'ToDoController@store']);
+Route::post('post', ['middleware' => 'current_category', 'uses' => 'ToDoController@storeCategory']);
 
 Route::post('postTask', 'ToDoController@storeTask');
+
+Route::post('update-task', 'ToDoController@updateTask');
+
+Route::post('drop-task', 'ToDoController@dropTask');

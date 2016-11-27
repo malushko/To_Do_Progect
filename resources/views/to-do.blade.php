@@ -6,6 +6,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>To-DO</title>
     <!-- Styles -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
@@ -73,6 +74,7 @@
                         @foreach($arrayCatTask as $task)
                             <li class="done">
                                 <input type="checkbox" value="">
+                                <span class="id-task" style="display: none">{{ $task->id }}</span>
                                 <span class="text">{{ $task->name_task }}</span>
                                 <small class="label label-danger">{{ $task->name_category }}</small>
                                 <div class="tools">
@@ -101,7 +103,7 @@
                     </button>
                     <h4 class="modal-title">Create New Category</h4>
                 </div>
-                <form class="forms">{{ csrf_field() }}
+                <form action="post" class="forms" method="post">
                     <div class="modal-body">
                             <div class="form-group">
                                 <label>List Name</label>
@@ -130,7 +132,7 @@
                     </button>
                     <h4 class="modal-title">Create New Task</h4>
                 </div>
-                <form class="forms">
+                <form action="postTask" method="post" class="forms">
                     <div class="modal-body">
                             <div class="form-group">
                                 <label>Task</label>
@@ -162,13 +164,23 @@
 <script>
     $(document).ready(function ($) {
         $('.glyphicon-remove-circle').on('click', function () {
+           var taskId = $(this).parent().parent().find('.id-task').text(); //save id for drop line
+            var objectToAjax = {};
+            objectToAjax.ajaxUrl = "drop-task";
+            objectToAjax.ajaxType = "post";
+            objectToAjax.ajaxData = {"idTask":taskId};
+            myAjax(objectToAjax);
             $(this).parent().parent().remove();
+
+
         });
-        $('.glyphicon-pencil').on('click', function () {
+        $('.glyphicon-pencil').on('click', function () { //function for update line
             var editText = $(this).parent().parent().find('.text');
             editText.parent().find('.glyphicon').css("display", "none");
             editText.parent().find('.saveButton').css("display", "inline")
             editText.attr('contenteditable', 'true').attr('id', 'editable');
+            var taskId = $(this).parent().parent().find('.id-task').text();
+            //start to set caret(cursor) position in contenteditable elementstart to set caret(cursor) position in contenteditable element
             var currentText = editText.text();
             currentText += " ";
             editText.text(currentText);
@@ -180,58 +192,69 @@
             sel.removeAllRanges();
             editText.removeAttr('id');
             sel.addRange(range);
+            //end to set caret(cursor) position in contenteditable elementstart to set caret(cursor) position in contenteditable element
+
         });
         $('.saveButton').click(function () {
             var forClassDone = $(this).parent().parent();
+            var taskId = forClassDone.find('.id-task').text();
             forClassDone.find('.text').removeAttr('contenteditable');
             forClassDone.find('.saveButton').css("display", "none");
             forClassDone.find('.glyphicon').css("display", "inline");
             var thisText = forClassDone.find('.text').text();
-            thisText = $.trim(thisText);
+            thisText = $.trim(thisText); // trim - delete space
             forClassDone.find('.text').text(thisText);
+            var objectToAjax = {};
+            objectToAjax.ajaxUrl = "update-task";
+            objectToAjax.ajaxType = "post";
+            objectToAjax.ajaxData = {"idTask":taskId, "nameTask":thisText};
+            myAjax(objectToAjax);
         });
 
-        $(this).submit(function () {
-            $.ajax({
-                type: 'POST',
-                url:
+        $('.forms').submit(function (e){
+            e.preventDefault();
+            var formObject = $(this);
+            var objectToAjax = {};
+            objectToAjax.ajaxUrl = formObject.attr('action');
+            objectToAjax.ajaxType = formObject.attr('method');
+            objectToAjax.ajaxData = formObject.serialize();
+            myAjax(objectToAjax);
+        });
+
+        function myAjax(ajaxObjact){
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
             });
-        });
 
+            $.ajax({
+                type: ajaxObjact.ajaxType,
+                url: ajaxObjact.ajaxUrl,
+                data: ajaxObjact.ajaxData,
+                success: function (data) {
+                      if(data[0] == 'category'){
+                          $('.list-group').append("<a href='#' class='list-group-item'>" + data[1] +
+                                  "<span class='badge'>1</span> </a>");
+                      }
+                      $('#create_category_modal').modal("hide");
+                      if(data[0] == 'task'){
+                          $('.todo-list').append('<li class="done"> <input type="checkbox" value=""> <span class="id-task" style="display: none">' +
+                                  data[1].id + '</span> <span class="text">' + data[1].name_task + '</span> <small class="label label-danger">' +
+                                  data[1].name_category + '</small> <div class="tools"> <button class="saveButton" type="button" name="buttonSave"value="Save" style="height: 17px; width: auto; font-size: x-small">' +
+                                  'Save </button> <i class="glyphicon glyphicon-pencil"></i> <i class="glyphicon glyphicon-remove-circle" ></i> </div> </li>');
+                      }
+                      $('#create_task_modal').modal("hide");
+                    },
+                error: function () {
+                    alert('error');
+                }
+            });
+        }
 
-//        function toDoAjax(drama){
-//           alert(drama);
-//        }
     });
 </script>
 </body>
 </html>
 
 
-
-{{--<form action= 'post' method="POST">{{ csrf_field() }}--}}
-{{--form action="postTask" method="post">{{ csrf_field() }}--}}
-/**
-* Created by zelin on 10.11.2016.
-*/
-jQuery(document). ready(function ($) {
-$(".form-button-paper").on("click", function () {
-var n = $(this).find(".image-ok");
-//  cosole.log(myAjaxName);
-$.ajax({
-type: 'POST',
-url: myAjaxName.url,
-data: { test: 'Тестовый запрос',
-action: 'my_action_paper',
-postId: myAjaxName.postId
-},
-success: function (dd){
-$(n).fadeIn('slow');
-console.log(dd);
-},
-error: function () {
-alert("error!!!");
-}
-});
-});
-});

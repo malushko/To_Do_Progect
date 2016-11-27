@@ -12,13 +12,37 @@ class ToDoController extends Controller
         return view('to-do',['arrayCategory'=>$arrayCatTask[0], 'arrayCatTask'=>$arrayCatTask[1]]);
     }
 
-    public function store(Category $category, Request $request){
-       $category->putCategory($request->nameCategory);
-       return $this->index($category);
+    public function storeCategory(Category $category, Request $request){
+        if ($request->ajax()){
+            $category->putCategory($request->nameCategory);
+            $arrayCategory = $category->ajaxCategory();
+            return ['category', $arrayCategory];
+        }
+
     }
 
-    public function storeTask(Task $task, Request $request, Category $category){
-       $task->putTask($request);
-        return $this->index($category);
+    public function dropTask(Task $task, Request $request){
+        if($request->ajax()){
+            $task->ajaxDrop($request->idTask);
+        }
     }
+
+    public function updateTask(Task $task, Request $request){
+        if($request->ajax()){
+            $taskID = $request->idTask;
+            $nameTask = $request->nameTask;
+            $task->ajaxUpdate($taskID, $nameTask);
+        }
+    }
+
+    public function storeTask(Task $task, Request $request){
+        if($request->ajax()){
+            $task->putTask($request);
+            $arrayTask = $task->ajaxTask();
+            return ['task', $arrayTask];
+        }
+        
+    }
+
+
 }

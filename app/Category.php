@@ -20,12 +20,16 @@ class Category extends Model
         $taska = Task::get();
         foreach ($taska as $value){
             $value['name_category'] = Category::find($value->category_id)->name_category;
-            array_forget($value, 'id');
             array_forget($value, 'category_id');
         }
-        
         return [$category, $taska];
      }
+    
+    public function ajaxCategory(){
+        $category = Category::orderBy('id', 'DESC')
+            ->first()->name_category;
+        return $category;
+    }
 }
 
 
