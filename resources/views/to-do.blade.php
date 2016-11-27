@@ -54,9 +54,7 @@
                         </a>
                         @endforeach
                     @else
-                        <a href="#" class="list-group-item" style="text-align: center">
-                            You don't have category!!
-                        </a>
+                           <h3 class="list-group-item" style="text-align: center">You don't have category!!</h3>
                     @endif
                 </div>
             </div>
@@ -163,7 +161,7 @@
 </div>
 <script>
     $(document).ready(function ($) {
-        $('.glyphicon-remove-circle').on('click', function () {
+        $('.todo-list').on('click','.glyphicon-remove-circle', function () {
            var taskId = $(this).parent().parent().find('.id-task').text(); //save id for drop line
             var objectToAjax = {};
             objectToAjax.ajaxUrl = "drop-task";
@@ -174,7 +172,7 @@
 
 
         });
-        $('.glyphicon-pencil').on('click', function () { //function for update line
+        $('.todo-list').on('click','.glyphicon-pencil', function () { //function for update line
             var editText = $(this).parent().parent().find('.text');
             editText.parent().find('.glyphicon').css("display", "none");
             editText.parent().find('.saveButton').css("display", "inline")
@@ -195,7 +193,7 @@
             //end to set caret(cursor) position in contenteditable elementstart to set caret(cursor) position in contenteditable element
 
         });
-        $('.saveButton').click(function () {
+        $('.todo-list').on('click', '.saveButton', function () {
             var forClassDone = $(this).parent().parent();
             var taskId = forClassDone.find('.id-task').text();
             forClassDone.find('.text').removeAttr('contenteditable');
@@ -234,6 +232,9 @@
                 data: ajaxObjact.ajaxData,
                 success: function (data) {
                       if(data[0] == 'category'){
+                          var a = $('.list-group .list-group-item:first .badge').text(); //count Category
+                          a = +a + 1;
+                          $('.list-group .list-group-item:first .badge').text(a);
                           $('.list-group').append("<a href='#' class='list-group-item'>" + data[1] +
                                   "<span class='badge'>1</span> </a>");
                       }

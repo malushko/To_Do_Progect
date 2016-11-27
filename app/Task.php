@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Input;
 
 class Task extends Model
 {
@@ -29,9 +30,10 @@ class Task extends Model
         return Category::where('id', $this->category_id)->first()->name_category;
     }
 
-    public function ajaxUpdate($taskId, $taskName){
-        Task::where('id', (integer)$taskId)
-        ->update(array('name_task' => $taskName));
+    public function ajaxUpdate(){
+        $data = Input::all();
+        DB::table('tasks')->where('id', (integer)$data['idTask'])
+             ->update(array('name_task' => $data['nameTask']));
     }
 }
 

@@ -29,9 +29,7 @@ class ToDoController extends Controller
 
     public function updateTask(Task $task, Request $request){
         if($request->ajax()){
-            $taskID = $request->idTask;
-            $nameTask = $request->nameTask;
-            $task->ajaxUpdate($taskID, $nameTask);
+            $task->ajaxUpdate();
         }
     }
 
