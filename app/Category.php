@@ -27,7 +27,7 @@ class Category extends Model
     
     public function ajaxCategory(){
         $category = Category::orderBy('id', 'DESC')
-            ->first()->name_category;
+            ->first();
         return $category;
     }
 }

@@ -54,7 +54,7 @@
                         </a>
                         @endforeach
                     @else
-                           <h3 class="list-group-item" style="text-align: center">You don't have category!!</h3>
+                        <h3 class="list-group-item no-category" style="text-align: center">You don't have category!!</h3>
                     @endif
                 </div>
             </div>
@@ -138,8 +138,8 @@
                             </div>
                             <div class="form-group">
                                 <label>Category</label>
-                                <select name="id" class="form-control">
-                                    <option>None</option>
+                                <select name="id" required class="form-control">
+                                    <option value="0" selected disabled>Выберите категорию</option>
                                     @foreach($arrayCategory as $id => $category)
                                         <option value ={{ $id }}>{{ $category }}</option>
                                     @endforeach
