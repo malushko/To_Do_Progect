@@ -134,12 +134,12 @@
                     <div class="modal-body">
                             <div class="form-group">
                                 <label>Task</label>
-                                <input type="text" name="nameTask" class="form-control" placeholder="Task">
+                                <input required type="text" name="nameTask" class="form-control" placeholder="Task">
                             </div>
                             <div class="form-group">
                                 <label>Category</label>
                                 <select name="id" required class="form-control">
-                                    <option value="0" selected disabled>Выберите категорию</option>
+                                    <option value="0" selected disabled>Select a category</option>
                                     @foreach($arrayCategory as $id => $category)
                                         <option value ={{ $id }}>{{ $category }}</option>
                                     @endforeach

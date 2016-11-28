@@ -88,7 +88,6 @@ $(document).ready(function ($) {
                         data[1].id + '</span> <span class="text">' + data[1].name_task + '</span> <small class="label label-danger">' +
                         data[1].name_category + '</small> <div class="tools"> <button class="saveButton" type="button" name="buttonSave"value="Save" style="height: 17px; width: auto; font-size: x-small">' +
                         'Save </button> <i class="glyphicon glyphicon-pencil"></i> <i class="glyphicon glyphicon-remove-circle" ></i> </div> </li>');
-
                 }
                 $('.form-group select').val(0);
                 $('#create_task_modal').modal("hide");
